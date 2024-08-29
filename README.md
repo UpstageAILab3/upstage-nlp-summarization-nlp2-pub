@@ -40,7 +40,7 @@
 - tar -xzvf data.tar.gz
 - rm data.tar.gz
 
-## 우분투에 miniconda3 세팅
+## 우분투에 miniconda3 설치
 
 - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 - chmod +x Miniconda3-latest-Linux-x86_64.sh
@@ -52,7 +52,21 @@
 - conda activate nlp
 - pip install jupyter nbconvert numpy matplotlib seaborn scikit-learn timm torch==2.3.1 pyyaml tqdm torch pytorch-lightning rouge transformers transformers[torch] wandb
 
-## jupyter_to_python.sh 파일 작성
+## miniconda3 세팅_우분투_bash(선택)
+우분투 bash 쉘 시작할 때, nlp 가상환경이 기본으로 실행되도록 하는 방법임.
+
+- vim ~/.bashrc
+- 가장 아래에 다음 두 줄 추가
+    - conda deactivate
+    - conda activate nlp
+- source ~/.bashrc
+
+## miniconda3 세팅_윈도우_cmd(선택)
+cmd 시작할 때, 어떤 가상환경도 실행되지 않도록 하는 방법임.
+
+- conda config --set auto_activate_base false
+
+## jupyter_to_python.sh 파일 작성(선택)
 
 ```bash
 #!/bin/bash
