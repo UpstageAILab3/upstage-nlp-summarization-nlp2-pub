@@ -54,6 +54,5 @@ training:
   warmup_ratio: 0.1
   weight_decay: 0.01
 wandb:
-  entity: helpot
-  name: test1
+  name: baseline-init2
   project: bootcamp-upstage-nlp
