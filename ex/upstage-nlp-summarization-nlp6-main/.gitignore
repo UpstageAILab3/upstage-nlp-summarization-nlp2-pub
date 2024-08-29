@@ -1,0 +1,10 @@
+# specify a folder with slash in the end
+# ignore all files in any directory data
+data/
+code/result/
+code/wandb/
+
+# ignore all files in any specify file
+*.tar.gz
+
+file_download.ipynb
