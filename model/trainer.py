@@ -33,7 +33,7 @@ class Trainer():
             fp16 = train_config['fp16'],
 
             # save 와 관련된 파라미터
-            output_dir = train_config['output_dir'],
+            output_dir = self.config['path']['output_dir'],
             overwrite_output_dir = train_config['overwrite_output_dir'],
             save_strategy = train_config['save_strategy'],
             save_total_limit = train_config['save_total_limit'],

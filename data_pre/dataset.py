@@ -66,7 +66,7 @@ class TestDataset(Dataset):
                             return_token_type_ids = False)
     
     def __getitem__(self, idx):
-        item = {key : val[idx].clone().detach() for key, val in self.encoder_input.items()}
+        item = {key : val[idx].clone().detach() for key, val in self.tokenized_encoder_input.items()}
         item['ID'] = self.id[idx]
         return item
     

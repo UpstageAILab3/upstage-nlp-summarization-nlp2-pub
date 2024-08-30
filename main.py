@@ -1,10 +1,10 @@
 import yaml
 import torch
 
-from model.model import Model
-
-from model.trainer import Trainer
 from data_pre.dataset import TrainValidDataset, TestDataset
+from model.model import Model
+from model.trainer import Trainer
+from model.test import Test
 
 
 class Main:
@@ -24,14 +24,29 @@ class Main:
         self.val_dataset = TrainValidDataset(self.config, self.tokenizer, is_train=False)
         self.test_dataset = TestDataset(self.config)
 
-        # trainer
+    def trainer(self):
         self.trainer = Trainer(self.config, self.model, self.train_dataset, self.val_dataset, self.tokenizer).get_trainer()
-        self.trainer.train()
+        return self.trainer
 
-    def __call__(self):
-        pass
+
+    def test(self):
+        best_model_path = self.config['path']['best_model_path']
+        test_inst = Test(self.config, self.test_dataset, best_model_path, self.tokenizer, self.device)
+        result_df = test_inst()
+        return result_df
+
+        
 
         
 
 if __name__ == "__main__":
-    Main()
+    main = Main()
+
+    # 학습
+    trainer = main.trainer()
+    trainer.train()
+
+    # 평가
+    
+    result = main.test()
+
