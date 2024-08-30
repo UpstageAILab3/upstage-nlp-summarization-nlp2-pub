@@ -1,0 +1,49 @@
+path:
+  data: /root/upstage-nlp-summarization-nlp2/data
+  train_csv: /root/upstage-nlp-summarization-nlp2/data/train.csv
+  dev_csv: /root/upstage-nlp-summarization-nlp2/data/dev.csv
+  test_csv: /root/upstage-nlp-summarization-nlp2/data/test.csv
+tokenizer:
+  max_length : 512
+  start_token : <s>
+  end_token : </s>
+  special_tokens:
+  - '#Person1#'
+  - '#Person2#'
+  - '#Person3#'
+  - '#PhoneNumber#'
+  - '#Address#'
+  - '#PassportNumber#'
+model:
+  name: digit82/kobart-summarization
+train:
+  epochs: 20
+  learning_rate: 0.001
+  batch_size: 32
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  lr_scheduler_type: cosine
+  optim: adamw_torch
+  gradient_accumulation_steps: 1
+  fp16: true
+  save_strategy: epoch
+  save_total_limit: 5
+  load_best_model_at_end: true
+  seed: 42
+  predict_with_generate: true
+  generation_max_length: 100
+  do_train: true
+  do_eval: true
+  output_dir: /root/upstage-nlp-summarization-nlp2/results
+  overwrite_output_dir: true
+valid:
+  batch_size: 50
+  evaluation_strategy: epoch
+  early_stopping_patience: 5
+  early_stopping_threshold: 0.001
+test:
+  remove_tokens:
+  - <usr>
+  - <s>
+  - </s>
+  - <pad>
