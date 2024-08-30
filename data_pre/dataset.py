@@ -45,7 +45,7 @@ class TrainValidDataset(Dataset):
         return len(self.df)
 
 class TestDataset(Dataset):
-    def __init__(self, tokenizer, config):
+    def __init__(self, config, tokenizer):
         self.config = config
         self.tokenizer = tokenizer
 

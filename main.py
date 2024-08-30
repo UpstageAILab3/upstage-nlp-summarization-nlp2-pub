@@ -15,8 +15,9 @@ class Main:
             self.config = yaml.safe_load(file)
 
         # Model & Tokenizer
-        self.tokenizer = Tokenizer(self.config).getTokenizer()
-        self.model = Model(self.config, self.tokenizer).getModel().to(self.device)
+        self.model_instance = Model(self.config)
+        self.model = self.model_instance.getModel()
+        self.tokenizer = self.model_instance.getTokenizer()
 
         # dataset
         self.train_dataset = TrainValidDataset(self.config, self.tokenizer, is_train=True)

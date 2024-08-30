@@ -8,31 +8,36 @@ class Trainer():
         # 파라미터 설정
         train_config = config['train']
         valid_config = config['valid']
+
         self.train_args = Seq2SeqTrainingArguments(
+            # 학습에 필요한 필수 파라미터
             num_train_epochs = train_config['epochs'],
             learning_rate = train_config['learning_rate'],
             optim = train_config['optim'],
             per_device_train_batch_size = train_config['batch_size'],
-            per_device_eval_batch_size = valid_config['batch_size'],
-            evaluation_strategy = valid_config['evaluation_strategy'],
-            lr_scheduler_type = train_config['lr_scheduler_type'],
+            generation_max_length = train_config['generation_max_length'],
             seed = train_config['seed'],
 
+            # 평가와 관련된 파라미터
+            per_device_eval_batch_size = valid_config['batch_size'],
+            evaluation_strategy = valid_config['evaluation_strategy'],
+            predict_with_generate = train_config['predict_with_generate'],
+            do_train = train_config['do_train'],
+            do_eval = train_config['do_eval'],
+
+            # 학습 성능을 올려주는 파라미터
+            lr_scheduler_type = train_config['lr_scheduler_type'],
             warmup_ratio = train_config['warmup_ratio'],
             weight_decay = train_config['weight_decay'],
             gradient_accumulation_steps = train_config['gradient_accumulation_steps'],
             fp16 = train_config['fp16'],
 
+            # save 와 관련된 파라미터
             output_dir = train_config['output_dir'],
             overwrite_output_dir = train_config['overwrite_output_dir'],
             save_strategy = train_config['save_strategy'],
             save_total_limit = train_config['save_total_limit'],
             load_best_model_at_end = train_config['load_best_model_at_end'],
-
-            predict_with_generate=train_config['predict_with_generate'], #To use BLEU or ROUGE score
-            generation_max_length=train_config['generation_max_length'],
-            do_train=train_config['do_train'],
-            do_eval=train_config['do_eval'],
         )
 
         # callback 설정
@@ -68,14 +73,15 @@ class Trainer():
         # remove token 제거
         replaced_predictions = decoded_preds.copy()
         replaced_labels = labels.copy()
+        remove_tokens = config['test']['remove_tokens']
 
-        remove_tokens = config['test']['remove_tokns']
         for token in remove_tokens:
             replaced_predictions = [sentence.replace(token, " ") for sentence in replaced_predictions]
             replaced_labels = [sentence.replace(token, " ") for sentence in replaced_labels]
 
         results = rouge.get_scores(replaced_predictions, replaced_labels, avg = True)
         result = {key: value["f"] for key, value in results.items()}
+        
         return result
 
     def get_trainer(self):
