@@ -6,7 +6,6 @@ server_backup_final
 fonts/
 test/
 test_backup/
-submission/
 wandb/
 output/
 checkpoint/
