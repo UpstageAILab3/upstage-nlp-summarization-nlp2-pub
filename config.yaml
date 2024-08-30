@@ -3,6 +3,8 @@ path:
   train_csv: /root/upstage-nlp-summarization-nlp2/data/train.csv
   dev_csv: /root/upstage-nlp-summarization-nlp2/data/dev.csv
   test_csv: /root/upstage-nlp-summarization-nlp2/data/test.csv
+  output_dir: /root/upstage-nlp-summarization-nlp2/results
+  best_model_path: /root/upstage-nlp-summarization-nlp2/results/checkpoint-390 # 학습이후 생성된 checkpoint path
 tokenizer:
   max_length : 512
   start_token : <s>
@@ -34,7 +36,6 @@ train:
   generation_max_length: 100
   do_train: true
   do_eval: true
-  output_dir: /root/upstage-nlp-summarization-nlp2/results
   overwrite_output_dir: true
 valid:
   batch_size: 50
@@ -47,3 +48,9 @@ test:
   - <s>
   - </s>
   - <pad>
+  batch_size: 32
+  no_repeat_ngram_size: 2
+  early_stopping: true
+  generate_max_length: 100
+  num_beams: 4
+  
