@@ -4,7 +4,6 @@ path:
   dev_csv: /root/upstage-nlp-summarization-nlp2/data/dev.csv
   test_csv: /root/upstage-nlp-summarization-nlp2/data/test.csv
   output_dir: /root/upstage-nlp-summarization-nlp2/results
-  best_model_path: /root/upstage-nlp-summarization-nlp2/results/checkpoint-390 # 학습이후 생성된 checkpoint path
 tokenizer:
   max_length : 512
   start_token : <s>
