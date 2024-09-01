@@ -30,16 +30,13 @@ class Main:
 
 
     def test(self):
-        best_model_path = self.config['path']['best_model_path']
-        test_inst = Test(self.config, self.test_dataset, best_model_path, self.tokenizer, self.device)
+        test_inst = Test(self.config, self.test_dataset, self.tokenizer, self.device)
         result_df = test_inst()
         return result_df
 
-        
-
-        
 
 if __name__ == "__main__":
+    # Model / Tokenizer / dataset / config 초기화
     main = Main()
 
     # 학습
@@ -47,6 +44,5 @@ if __name__ == "__main__":
     trainer.train()
 
     # 평가
-    
     result = main.test()
 
