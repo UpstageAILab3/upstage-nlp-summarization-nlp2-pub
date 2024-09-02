@@ -4,6 +4,10 @@ from rouge import Rouge
 class Trainer():
     def __init__(self, config, model, train_dataset, val_dataset, tokenizer):
         self.config = config
+        self.model = model
+        self.train_dataset = train_dataset
+        self.val_dataset = val_dataset
+        self.tokenizer = tokenizer
 
         # 파라미터 설정
         train_config = config['train']
@@ -38,22 +42,18 @@ class Trainer():
             save_strategy = train_config['save_strategy'],
             save_total_limit = train_config['save_total_limit'],
             load_best_model_at_end = train_config['load_best_model_at_end'],
+            
+            # wandb logging
+            report_to = ["wandb"],
+            run_name = "summary_with_base_bart",
+            logging_strategy = train_config['logging_strategy'],
+            logging_steps = train_config['logging_steps']
         )
 
         # callback 설정
         self.callback = EarlyStoppingCallback(
             early_stopping_patience = valid_config['early_stopping_patience'],
             early_stopping_threshold = valid_config['early_stopping_threshold']
-        )
-
-        # Trainer 생성
-        self.trainer = Seq2SeqTrainer(
-            model = model,
-            args = self.train_args,
-            train_dataset = train_dataset,
-            eval_dataset = val_dataset,
-            compute_metrics = lambda pred: self.compute_metrics(config, tokenizer, pred),
-            callbacks = [self.callback]
         )
 
     def compute_metrics(self, config, tokenizer, pred):
@@ -84,5 +84,19 @@ class Trainer():
         
         return result
 
+    def set_wandb_run_name(self, run_name):
+        pass
+
+
     def get_trainer(self):
+        # Trainer 생성
+        self.trainer = Seq2SeqTrainer(
+            model = self.model,
+            args = self.train_args,
+            train_dataset = self.train_dataset,
+            eval_dataset = self.val_dataset,
+            compute_metrics = lambda pred: self.compute_metrics(self.config, self.tokenizer, pred),
+            callbacks = [self.callback]
+        )
         return self.trainer
+    
