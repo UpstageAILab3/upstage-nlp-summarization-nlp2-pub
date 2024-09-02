@@ -1,6 +1,8 @@
 /data
 /code
-/results
-/submits
+/results/*
+!/results/.gitkeep
+/submits/*
+!/submits/.gitkeep
 temp.ipynb
 eda.ipynb
