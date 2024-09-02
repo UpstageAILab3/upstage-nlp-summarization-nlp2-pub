@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
 import pandas as pd
+from rouge import Rouge
 
 from transformers import BartForConditionalGeneration
 
@@ -30,27 +31,55 @@ class ModelAnalyze():
         label = []
 
         with torch.no_grad():
-            for item in tqdm(dataloader):
-                item_text = self.id2text(item['input_ids'])
-                generated_ids = model.generate(input_ids = item['input_ids'],
+            for batch in tqdm(dataloader):
+                batch_text = self.id2text(batch['input_ids'])
+                generated_ids = model.generate(input_ids = batch['input_ids'].to(self.device),
                                                no_repeat_ngram_size = self.config['test']['no_repeat_ngram_size'],
                                                early_stopping = self.config['test']['early_stopping'],
                                                max_length = self.config['test']['generate_max_length'],
                                                num_beams = self.config['test']['num_beams'])
-                item_generated_text = self.id2text(generated_ids)
-                item_label = item['labels'] 
-
-                input_text.append(item_text)
-                generated_text.append(item_generated_text)
-                label.append(item_label)
+                generated_batch_text = self.id2text(generated_ids)
+                batch_label = self.id2text(batch['labels'])
+                
+                for item_text, generated_item_text, item_label in zip(batch_text, generated_batch_text, batch_label):
+                    input_text.append(item_text)
+                    generated_text.append(generated_item_text)
+                    label.append(item_label)
 
         output = pd.DataFrame({"input_text" : input_text,
                                "generated_text" : generated_text,
                                "label" : label})
-        return output
+        
+        # 평가 지표
+        output, result_mean = self.compute_metric(output)
+
+        return output, result_mean
     
-    def compute_metric(self):
-        pass
+    def compute_metric(self, output_df):
+        df = output_df.copy()
+        rouge = Rouge()
+
+        predictions = df['generated_text']
+        label = df['label']
+
+        avg_results = rouge.get_scores(predictions, label, avg = True)
+        
+        # 개별 데이터 점수
+        results = rouge.get_scores(predictions, label, avg = False)
+        results_data = []
+        for i, score in enumerate(results):
+            rouge_1 = score['rouge-1']['f']
+            rouge_2 = score['rouge-2']['f']
+            rouge_l = score['rouge-l']['f']
+            rouge_mean = (rouge_1 + rouge_2 + rouge_l) / 3
+
+            results_data.append({'rouge_1' : f"{rouge_1:.4f}", 'rouge_2': f"{rouge_2:.4f}", 'rouge_l' : f"{rouge_l:.4f}", 'rouge_mean' : f'{rouge_mean:.4f}'})
+
+        results_df = pd.DataFrame(results_data)
+
+        # 데이터 + 개별 데이터 평가
+        df = pd.concat([df, results_df], axis=1)
+        return df, avg_results
 
     def model_path_to_model(self, model_path):
         model = BartForConditionalGeneration.from_pretrained(model_path)
@@ -58,14 +87,17 @@ class ModelAnalyze():
         return model.to(self.device)
         
 
-    def id2text(self, id_data):
-        summary_text = self.tokenizer.decode(id_data)
+    def id2text(self, id_batch):
+        batch_text = []
         remove_tokens = self.config['test']['remove_tokens']
 
-        preprocessed_text = [word for word in summary_text.split() 
-                             if word not in remove_tokens]
+        id_batch[id_batch == -100] = self.tokenizer.pad_token_id
+        decoded_batch = self.tokenizer.batch_decode(id_batch, clean_up_tokenization_spaces = True)
 
-        return " ".join(preprocessed_text)
+        for token in remove_tokens:
+            batch_text = [sentence.replace(token, ' ') for sentence in decoded_batch]
+
+        return batch_text
 
 
         
