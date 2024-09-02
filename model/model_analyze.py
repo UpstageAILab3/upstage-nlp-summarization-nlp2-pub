@@ -51,9 +51,9 @@ class ModelAnalyze():
                                "label" : label})
         
         # 평가 지표
-        output, result_mean = self.compute_metric(output)
+        output = self.compute_metric(output)
 
-        return output, result_mean
+        return output
     
     def compute_metric(self, output_df):
         df = output_df.copy()
@@ -62,12 +62,10 @@ class ModelAnalyze():
         predictions = df['generated_text']
         label = df['label']
 
-        avg_results = rouge.get_scores(predictions, label, avg = True)
-        
         # 개별 데이터 점수
         results = rouge.get_scores(predictions, label, avg = False)
         results_data = []
-        for i, score in enumerate(results):
+        for score in results:
             rouge_1 = score['rouge-1']['f']
             rouge_2 = score['rouge-2']['f']
             rouge_l = score['rouge-l']['f']
@@ -79,7 +77,23 @@ class ModelAnalyze():
 
         # 데이터 + 개별 데이터 평가
         df = pd.concat([df, results_df], axis=1)
-        return df, avg_results
+        df = df.sort_values(by = 'rouge_mean')
+
+        # 평균 데이터 추가
+        avg_results = rouge.get_scores(predictions, label, avg = True)
+        rouge_mean = (avg_results['rouge-1']['f'] + avg_results['rouge-2']['f'] + avg_results['rouge-l']['f']) / 3
+        avg_row = {
+            'input_text': 'AVERAGE',
+            'generated_text': 'AVERAGE',
+            'label': 'AVERAGE',
+            'rouge_1': avg_results['rouge-1']['f'],
+            'rouge_2': avg_results['rouge-2']['f'],
+            'rouge_l': avg_results['rouge-l']['f'],
+            'rouge_mean': rouge_mean
+        }
+        df = pd.concat([df, pd.DataFrame([avg_row])], axis=0)
+
+        return df
 
     def model_path_to_model(self, model_path):
         model = BartForConditionalGeneration.from_pretrained(model_path)
