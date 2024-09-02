@@ -4,6 +4,7 @@ path:
   dev_csv: /root/upstage-nlp-summarization-nlp2/data/dev.csv
   test_csv: /root/upstage-nlp-summarization-nlp2/data/test.csv
   output_dir: /root/upstage-nlp-summarization-nlp2/results
+  submit_dir: /root/upstage-nlp-summarization-nlp2/submits
 tokenizer:
   max_length : 512
   start_token : <s>
@@ -19,7 +20,7 @@ model:
   name: digit82/kobart-summarization
 train:
   epochs: 20
-  learning_rate: 0.001
+  learning_rate: 0.00001
   batch_size: 32
   warmup_ratio: 0.1
   weight_decay: 0.01
@@ -36,6 +37,8 @@ train:
   do_train: true
   do_eval: true
   overwrite_output_dir: true
+  logging_strategy: steps
+  logging_steps: 100
 valid:
   batch_size: 50
   evaluation_strategy: epoch

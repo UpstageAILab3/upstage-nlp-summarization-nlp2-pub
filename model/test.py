@@ -1,17 +1,19 @@
-from typing import Any
 import torch
 from transformers import BartForConditionalGeneration
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import pandas as pd
+import os
+import re
 
 class Test():
-    def __init__(self, config, dataset ,tokenizer, device):
+    def __init__(self, config, dataset ,tokenizer, model_path, device):
         self.config = config
         self.tokenizer = tokenizer
         self.device = device
         self.dataset = dataset
 
+        self.model_path = model_path
         self.best_model = self.get_best_model()
 
     def get_best_model(self):
@@ -53,4 +55,38 @@ class Test():
             }
         )
 
+        # 결과 csv 저장
+        self.save_result(output)
+
         return output
+    
+
+    def post_process_summary(self, summary):
+        # 1. '#'과 조사 사이의 띄어쓰기 제거
+        summary = re.sub(r'#([A-Za-z0-9_]+)#\s+(은|는|이|가|을|를|에|에게|의|로|으로)', r'#\1#\g<2>', summary)
+        
+        # 2. 의미 없는 큰 따옴표 제거
+        summary = summary.replace('"', '')
+        
+        # 3. 문장 맨 앞의 들여쓰기 제거
+        summary = summary.strip()
+        return summary
+    
+    
+    def save_result(self, result_df):
+        # 전처리
+        result_df['summary'] = result_df['summary'].apply(self.post_process_summary)
+
+        # 파일 저장
+        file_cnt = 0
+        model_name = self.config['model']['name'].split('/')[-1]
+        file_name = os.path.join(self.config['path']['submit_dir'], model_name)
+        
+        while os.path.exists(file_name):
+            file_cnt += 1
+            file_name = f"{file_name}({file_cnt})"
+
+        file_name += '.csv'
+        result_df.to_csv(file_name, index=False)
+
+    

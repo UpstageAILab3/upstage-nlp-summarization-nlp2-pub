@@ -1,16 +1,19 @@
 from .test import Test
-from torch.util.data import DataLoader
+from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
 import pandas as pd
 
-class Valid():
-    def __init__(self, config, tokenizer):
+from transformers import BartForConditionalGeneration
+
+class ModelAnalyze():
+    def __init__(self, config, tokenizer, device):
         self.config = config
         self.tokenizer = tokenizer
+        self.device = device
 
 
-    def get_result(self, dataset, model):
+    def get_result(self, dataset, model_path):
         """
         INPUT:
             dataset : ['input_ids', 'attention_mask', 'decoder_input_ids', 'decoder_attention_mask', 'labels']
@@ -18,7 +21,9 @@ class Valid():
         OUTPUT:
             DataFrame : ['input_text', 'generated_text', 'label'] 
         """
+
         dataloader = DataLoader(dataset, self.config['test']['batch_size'])
+        model = self.model_path_to_model(model_path)
 
         input_text = []
         generated_text = []
@@ -46,10 +51,15 @@ class Valid():
     
     def compute_metric(self):
         pass
+
+    def model_path_to_model(self, model_path):
+        model = BartForConditionalGeneration.from_pretrained(model_path)
+        model.resize_token_embeddings(len(self.tokenizer))
+        return model.to(self.device)
         
 
     def id2text(self, id_data):
-        summary_text = self.tokenizer.decoce(id_data)
+        summary_text = self.tokenizer.decode(id_data)
         remove_tokens = self.config['test']['remove_tokens']
 
         preprocessed_text = [word for word in summary_text.split() 
