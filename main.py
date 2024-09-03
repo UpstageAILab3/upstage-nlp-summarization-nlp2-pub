@@ -2,6 +2,7 @@ import yaml
 import torch
 import gc
 import os
+import random
 
 from model.model import Model
 from model.trainer import Trainer
@@ -9,9 +10,6 @@ from model.test import Test
 from model.model_analyze import ModelAnalyze
 
 from data_pre.dataset import TrainValidDataset, TestDataset, T5TrainValidDataset, T5TestDataset
-
-import random
-random.seed(42)
 
 import pandas as pd
 pd.set_option('display.max_colwidth', None)
@@ -22,6 +20,7 @@ warnings.filterwarnings('ignore')
 class Main:
     def __init__(self) -> None:
         self.clear_cuda_memory()
+        self.set_seed()
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         with open('/root/upstage-nlp-summarization-nlp2/config.yaml', "r") as file:
@@ -100,6 +99,22 @@ class Main:
     def clear_cuda_memory(self):
         torch.cuda.empty_cache()
         gc.collect()
+
+    # 시드 고정
+    def set_seed(self, seed = 42):
+        random.seed(seed)
+        
+        # PyTorch의 시드 설정
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)  # 멀티-GPU 사용 시
+        
+        # CuDNN의 결정론적 작동 설정
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        
+        # 환경 변수 설정 (일부 PyTorch 작업의 랜덤성 제어)
+        os.environ['PYTHONHASHSEED'] = str(seed)
 
 if __name__ == '__main__':
     Main()
