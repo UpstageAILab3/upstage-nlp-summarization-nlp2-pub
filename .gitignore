@@ -2,7 +2,10 @@
 /code
 /wandb
 /results/*
+!/results/.gitkeep
 /submits/*
+!/submits/.gitkeep
 /valid/*
+!/valid/.gitkeep
 temp.ipynb
 eda.ipynb
