@@ -59,7 +59,7 @@ if uploaded_file is not None:
     # 평균 표시
     avg_data = avg_data[['rouge_1', 'rouge_2', 'rouge_l', 'rouge_mean']]
     avg_text = f"""
-    <h1>total mean : {avg_data['rouge_mean']:.4f}</h1>
+    <h1>total score : {avg_data['rouge_mean']*100:.4f}</h1>
     <p> 
         rouge_1 : {avg_data['rouge_1']:.4f}<br>
         rouge_2 : {avg_data['rouge_2']:.4f}<br>

@@ -1,23 +1,47 @@
-from transformers import BartConfig, BartForConditionalGeneration, AutoTokenizer
+from transformers import T5ForConditionalGeneration
+from transformers import BartConfig, BartForConditionalGeneration
+from transformers import AutoTokenizer, AutoConfig
 
 class Model():
     def __init__(self, config, device):
+        self.config = config
         self.device = device
-        model_name = config['model']['name']
 
-        # tokenizer
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.special_tokens_dict = {'additional_special_tokens' : config['tokenizer']['special_tokens']}
-        self.tokenizer.add_special_tokens(self.special_tokens_dict)
+        self.special_tokens_dict = {'additional_special_tokens' : self.config['tokenizer']['special_tokens']}
 
-        # model
-        bart_config = BartConfig().from_pretrained(model_name)
+    def getBartTokenizer(self):
+        model_name = self.config['model']['bart']
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer.add_special_tokens(self.special_tokens_dict)
         
-        self.bart_model = BartForConditionalGeneration.from_pretrained(model_name, config = bart_config)
-        self.bart_model.resize_token_embeddings(len(self.tokenizer))
+        return tokenizer
+    
+    def getT5Tokenizer(self):
+        model_name = self.config['model']['t5']
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer.add_special_tokens(self.special_tokens_dict)
 
-    def getModel(self):
+        return tokenizer
+
+
+    def getBartModel(self, tokenizer):
+        model_name = self.config['model']['bart']
+
+        bart_config = BartConfig().from_pretrained(model_name)
+        self.bart_model = BartForConditionalGeneration.from_pretrained(model_name, config = bart_config)
+        self.bart_model.resize_token_embeddings(len(tokenizer))
+        
         return self.bart_model.to(self.device)
     
-    def getTokenizer(self):
-        return self.tokenizer
+    def getT5Model(self, tokenizer):
+        model_name = self.config['model']['t5']
+
+        t5_config = AutoConfig.from_pretrained(model_name)
+        self.t5_model = T5ForConditionalGeneration.from_pretrained(model_name, config = t5_config)
+        self.t5_model.resize_token_embeddings(len(tokenizer))
+
+        return self.t5_model.to(self.device)
+        
+
+
+    

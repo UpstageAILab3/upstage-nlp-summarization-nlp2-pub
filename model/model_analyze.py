@@ -4,6 +4,8 @@ import torch
 from tqdm import tqdm
 import pandas as pd
 from rouge import Rouge
+import os
+import re
 
 from transformers import BartForConditionalGeneration
 
@@ -52,6 +54,10 @@ class ModelAnalyze():
         
         # 평가 지표
         output = self.compute_metric(output)
+
+        # 저장
+        model_name = self.config['model']['select_model']
+        self.save_file(output, model_name)
 
         return output
     
@@ -112,6 +118,37 @@ class ModelAnalyze():
             batch_text = [sentence.replace(token, ' ') for sentence in decoded_batch]
 
         return batch_text
+    
+    def save_file(self, result_df, model_name):
+        # 전처리
+        result_df['input_text'] = result_df['input_text'].apply(self.post_process)
+        result_df['generated_text'] = result_df['generated_text'].apply(self.post_process)
+        result_df['label'] = result_df['label'].apply(self.post_process)
+
+        # 파일 저장
+        file_cnt = 0
+        model_name = model_name.split('/')[-1]
+        file_name = os.path.join(self.config['path']['valid_dir'], model_name)
+        
+        while os.path.exists(file_name + '.csv'):
+            file_cnt += 1
+            file_name = f"{file_name}({file_cnt})"
+
+
+        file_name += '.csv'
+        result_df.to_csv(file_name, index=False)
+
+    def post_process(self, summary):
+        # 1. '#'과 조사 사이의 띄어쓰기 제거
+        summary = re.sub(r'#([A-Za-z0-9_]+)#\s+(은|는|이|가|을|를|에|에게|의|로|으로)', r'#\1#\g<2>', summary)
+        
+        # 2. 의미 없는 큰 따옴표 제거
+        summary = summary.replace('"', '')
+        
+        # 3. 문장 맨 앞의 들여쓰기 제거
+        summary = summary.strip()
+        return summary
+    
 
 
         
