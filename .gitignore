@@ -1,9 +1,8 @@
 /data
 /code
+/wandb
 /results/*
-!/results/.gitkeep
 /submits/*
-!/submits/.gitkeep
+/valid/*
 temp.ipynb
 eda.ipynb
-/wandb
