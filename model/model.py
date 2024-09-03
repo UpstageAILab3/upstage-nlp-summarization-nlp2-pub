@@ -23,7 +23,6 @@ class Model():
 
         return tokenizer
 
-
     def getBartModel(self, tokenizer):
         model_name = self.config['model']['bart']
 
