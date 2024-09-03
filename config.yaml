@@ -5,28 +5,41 @@ path:
   test_csv: /root/upstage-nlp-summarization-nlp2/data/test.csv
   output_dir: /root/upstage-nlp-summarization-nlp2/results
   submit_dir: /root/upstage-nlp-summarization-nlp2/submits
+  valid_dir:  /root/upstage-nlp-summarization-nlp2/valid
 tokenizer:
   max_length : 512
   start_token : <s>
   end_token : </s>
   special_tokens:
+  - '#Address#'
+  - '#CarNumber#'
+  - '#CardNumber#'
+  - '#DateOfBirth#'
+  - '#Email#'
+  - '#PassportNumber#'
+  - '#Person#'
   - '#Person1#'
   - '#Person2#'
   - '#Person3#'
+  - '#Person4#'
+  - '#Person5#'
+  - '#Person6#'
+  - '#Person7#'
   - '#PhoneNumber#'
-  - '#Address#'
-  - '#PassportNumber#'
+  - '#SSN#'
 model:
-  name: digit82/kobart-summarization
+  select_model: bart  # t5
+  bart: digit82/kobart-summarization
+  t5: eenzeenee/t5-base-korean-summarization
 train:
-  epochs: 20
+  epochs: 1
   learning_rate: 0.00001
   batch_size: 32
   warmup_ratio: 0.1
   weight_decay: 0.01
   lr_scheduler_type: cosine
   optim: adamw_torch
-  gradient_accumulation_steps: 1
+  gradient_accumulation_steps: 4
   fp16: true
   save_strategy: epoch
   save_total_limit: 5
@@ -39,10 +52,11 @@ train:
   overwrite_output_dir: true
   logging_strategy: steps
   logging_steps: 100
+  run_name : "nlp_base_model"
 valid:
-  batch_size: 50
+  batch_size: 32
   evaluation_strategy: epoch
-  early_stopping_patience: 5
+  early_stopping_patience: 3
   early_stopping_threshold: 0.001
 test:
   remove_tokens:

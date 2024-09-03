@@ -1,51 +1,105 @@
 import yaml
 import torch
+import gc
 import os
 
-from data_pre.dataset import TrainValidDataset, TestDataset
 from model.model import Model
 from model.trainer import Trainer
 from model.test import Test
+from model.model_analyze import ModelAnalyze
 
+from data_pre.dataset import TrainValidDataset, TestDataset, T5TrainValidDataset, T5TestDataset
+
+import random
+random.seed(42)
+
+import pandas as pd
+pd.set_option('display.max_colwidth', None)
+
+import warnings
+warnings.filterwarnings('ignore')
 
 class Main:
     def __init__(self) -> None:
+        self.clear_cuda_memory()
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         with open('/root/upstage-nlp-summarization-nlp2/config.yaml', "r") as file:
             self.config = yaml.safe_load(file)
 
-        # Model & Tokenizer
-        self.model_instance = Model(self.config, self.device)
-        self.model = self.model_instance.getModel()
-        self.tokenizer = self.model_instance.getTokenizer()
+        self.model_select = self.config['model']['select_model']
 
-        # dataset
-        self.train_dataset = TrainValidDataset(self.config, self.tokenizer, is_train=True)
-        self.val_dataset = TrainValidDataset(self.config, self.tokenizer, is_train=False)
-        self.test_dataset = TestDataset(self.config, self.tokenizer)
+        # model / tokenizer / dataset 생성
+        self.tokenizer, self.model, self.train_dataset, self.valid_dataset, self.test_dataset = self.get_model_tokenizer_datasets()
 
-    def trainer(self):
-        self.trainer = Trainer(self.config, self.model, self.train_dataset, self.val_dataset, self.tokenizer).get_trainer()
-        return self.trainer
+        # trainer 생성 & 실행
+        self.trainer = self.get_trainer()
+        self.trainer.train()
 
+        # test 추론
+        self.inference()
 
-    def test(self, model_path):
-        test_inst = Test(self.config, self.test_dataset, self.tokenizer, model_path, self.device)
-        result_df = test_inst()
-
-        return result_df
+        # 모델 성능 분석
+        self.model_eval()
 
 
-if __name__ == "__main__":
-    # Model / Tokenizer / dataset / config 초기화
-    main = Main()
+    # model & tokenizer & dataset 생성
+    def get_model_tokenizer_datasets(self):
+        print("\n","-" * 30, " (모델 / 토크나이저 / 데이터 셋)을 생성합니다", "-" * 30)
+        model_utils = Model(self.config, self.device)
 
-    # 학습
-    trainer = main.trainer()
-    trainer.train()
+        if self.model_select == 't5':
+            tokenizer = model_utils.getT5Tokenizer()
+            model = model_utils.getT5Model(tokenizer)
 
-    # 평가
-    model_path = '/root/upstage-nlp-summarization-nlp2/results/checkpoint-2340'
-    result = main.test(model_path)
+            train_dataset = T5TrainValidDataset(self.config, tokenizer, is_train=True)
+            valid_dataset = T5TrainValidDataset(self.config, tokenizer, is_train=False)
+            test_dataset = T5TestDataset(self.config, tokenizer)
 
+        elif self.model_select == 'bart':
+            tokenizer = model_utils.getBartTokenizer()
+            model = model_utils.getBartModel(tokenizer)
+
+            train_dataset = TrainValidDataset(self.config, tokenizer, is_train = True)
+            valid_dataset = TrainValidDataset(self.config, tokenizer, is_train = False)
+            test_dataset = TestDataset(self.config, tokenizer)
+
+        return tokenizer, model, train_dataset, valid_dataset, test_dataset
+
+
+    # trainer 생성
+    def get_trainer(self):
+        print("\n","-" * 30, "학습을 시작합니다", "-" * 30)
+        trainer = Trainer(self.config, self.model, self.train_dataset, self.valid_dataset, self.tokenizer).get_trainer()
+        return trainer
+    
+    # Test 추론 & submission 파일 저장
+    def inference(self):
+        print("\n", "-" * 30, "test 추론을 시작합니다", "-" * 30)
+        test_utils = Test(self.config, self.test_dataset, self.tokenizer, self.device)
+        best_model_path = self.trainer.state.best_model_checkpoint
+
+        if self.model_select == 't5':
+            model = test_utils.getT5Model(best_model_path)
+            model_name = self.config['model']['t5']
+
+        elif self.model_select == 'bart':
+            model = test_utils.getBartModel(best_model_path)
+            model_name = self.config['model']['bart']
+
+        test_utils.testModel(model, model_name)
+
+    # 모델 성능 분석
+    def model_eval(self):
+        print("\n", "-"*30, "모델 성능 분석", "-" * 30)
+        model_path = self.trainer.state.best_model_checkpoint
+        model_analyze = ModelAnalyze(self.config, self.tokenizer, self.device)
+        valid_df = model_analyze.get_result(self.valid_dataset, model_path)
+
+    # CUDA 내용물 비우기
+    def clear_cuda_memory(self):
+        torch.cuda.empty_cache()
+        gc.collect()
+
+if __name__ == '__main__':
+    Main()

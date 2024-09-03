@@ -43,6 +43,42 @@ class TrainValidDataset(Dataset):
     
     def __len__(self):
         return len(self.df)
+    
+class T5TrainValidDataset(Dataset):
+    def __init__(self, config, tokenizer, is_train):
+        self.config = config
+        self.tokenizer = tokenizer
+
+        if is_train:
+            self.df = pd.read_csv(self.config['path']['train_csv'])
+        else:
+            self.df = pd.read_csv(self.config['path']['dev_csv'])
+
+        self.encoder_input = self.df['dialogue'].tolist()
+        self.encoder_input = ['summarize: ' + dialogue for dialogue in self.encoder_input]
+        self.decoder_output = self.df['summary'].apply(lambda x : str(x)).tolist()
+                           
+        self.tokenized_encoder_input = self.get_tokenized_data(self.encoder_input)
+        self.tokenized_decoder_output = self.get_tokenized_data(self.decoder_output)
+
+    def get_tokenized_data(self, list_data):
+        return self.tokenizer(list_data,
+                            return_tensors = "pt",
+                            padding = True,
+                            add_special_tokens = True,
+                            truncation = True,
+                            max_length = self.config['tokenizer']['max_length'],
+                            return_token_type_ids = False)
+
+
+    def __getitem__(self, idx):
+        item = {key: val[idx].clone().detach() for key, val in self.tokenized_encoder_input.items()}
+        item['labels'] = self.tokenized_decoder_output['input_ids'][idx]
+
+        return item
+    
+    def __len__(self):
+        return len(self.df)
 
 class TestDataset(Dataset):
     def __init__(self, config, tokenizer):
@@ -52,6 +88,37 @@ class TestDataset(Dataset):
         self.df = pd.read_csv(config['path']['test_csv'])
         
         self.encoder_input = self.df['dialogue'].tolist()
+        self.id =  self.df['fname'].tolist()
+
+        self.tokenized_encoder_input = self.get_tokenized_data(self.encoder_input)
+
+    def get_tokenized_data(self, list_data):
+        return self.tokenizer(list_data,
+                            return_tensors = "pt",
+                            padding = True,
+                            add_special_tokens = True,
+                            truncation = True,
+                            max_length = self.config['tokenizer']['max_length'],
+                            return_token_type_ids = False)
+    
+    def __getitem__(self, idx):
+        item = {key : val[idx].clone().detach() for key, val in self.tokenized_encoder_input.items()}
+        item['ID'] = self.id[idx]
+        return item
+    
+    def __len__(self):
+        return len(self.df)
+
+
+class T5TestDataset(Dataset):
+    def __init__(self, config, tokenizer):
+        self.config = config
+        self.tokenizer = tokenizer
+
+        self.df = pd.read_csv(config['path']['test_csv'])
+        
+        self.encoder_input = self.df['dialogue'].tolist()
+        self.encoder_input = ['summarize: ' + dialogue for dialogue in self.encoder_input]
         self.id =  self.df['fname'].tolist()
 
         self.tokenized_encoder_input = self.get_tokenized_data(self.encoder_input)

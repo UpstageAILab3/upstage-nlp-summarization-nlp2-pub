@@ -45,7 +45,7 @@ class Trainer():
             
             # wandb logging
             report_to = ["wandb"],
-            run_name = "summary_with_base_bart",
+            run_name = self.config['train']['run_name'],
             logging_strategy = train_config['logging_strategy'],
             logging_steps = train_config['logging_steps']
         )
