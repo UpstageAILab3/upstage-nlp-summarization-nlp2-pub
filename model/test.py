@@ -90,6 +90,7 @@ class Test():
         file_name = os.path.join(self.config['path']['submit_dir'], model_name)
         
         while os.path.exists(file_name + '.csv'):
+            file_name = re.sub(r'(\d+)', '', file_name)
             file_cnt += 1
             file_name = f"{file_name}({file_cnt})"
 
