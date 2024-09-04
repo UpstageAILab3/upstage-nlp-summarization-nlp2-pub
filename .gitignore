@@ -1,0 +1,7 @@
+# Ignore all CSV files
+*.csv
+
+# Ignore all PT files
+*.pt
+
+*.gz
