@@ -1,93 +1,42 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/zHsKfIy0)
-# Title (Please modify the title)
-## Team
+# 환경 세팅
 
-| ![박패캠](https://avatars.githubusercontent.com/u/156163982?v=4) | ![이패캠](https://avatars.githubusercontent.com/u/156163982?v=4) | ![최패캠](https://avatars.githubusercontent.com/u/156163982?v=4) | ![김패캠](https://avatars.githubusercontent.com/u/156163982?v=4) | ![오패캠](https://avatars.githubusercontent.com/u/156163982?v=4) |
-| :--------------------------------------------------------------: | :--------------------------------------------------------------: | :--------------------------------------------------------------: | :--------------------------------------------------------------: | :--------------------------------------------------------------: |
-|            [박패캠](https://github.com/UpstageAILab)             |            [이패캠](https://github.com/UpstageAILab)             |            [최패캠](https://github.com/UpstageAILab)             |            [김패캠](https://github.com/UpstageAILab)             |            [오패캠](https://github.com/UpstageAILab)             |
-|                            팀장, 담당 역할                             |                            담당 역할                             |                            담당 역할                             |                            담당 역할                             |                            담당 역할                             |
+### 1. 가상 환경 생성
 
-## 0. Overview
-### Environment
-- _Write Development environment_
+    conda create --name basecode
 
-### Requirements
-- _Write Requirements_
+### 2. 라이브러리 설치
 
-## 1. Competiton Info
+    pip install -r requirements.txt
 
-### Overview
+### 3. wandb 설정
 
-- _Write competition information_
+    wandb init
 
-### Timeline
+# 사용법
 
-- ex) January 10, 2024 - Start Date
-- ex) February 10, 2024 - Final submission deadline
+## 1. 빠른 시작
 
-## 2. Components
+    py main.py
 
-### Directory
+## 2. 파라미터 세팅 변경
 
-- _Insert your directory structure_
+config.yaml 파일에서 세팅을 변경해서 원하는 대로사용.
 
-e.g.
-```
-├── code
-│   ├── jupyter_notebooks
-│   │   └── model_train.ipynb
-│   └── train.py
-├── docs
-│   ├── pdf
-│   │   └── (Template) [패스트캠퍼스] Upstage AI Lab 1기_그룹 스터디 .pptx
-│   └── paper
-└── input
-    └── data
-        ├── eval
-        └── train
-```
+변경 해야할 주요 파라미터
 
-## 3. Data descrption
+- path에 있는 경로들
+- model > model_select 로 사용 모델 변경
+- vald > batch_size & train > batch_size & gradient_accumulation_step : 작을 수록 학습은 느리지만 성능이 올라갈 수 있음(오버피팅 주의) + 작게 하면 cuda 메모리에 부담이 덜 함.
+- train > epoch : 1로 설정되어 있어요!!
+- train > run_name : wandb에 저장할 때 run 이름
 
-### Dataset overview
+## 3. 모델 성능 평가 streamlit 사용법
 
-- _Explain using data_
+    streamlit run result_visualization.py
 
-### EDA
+명령어 실행하면 streamlit 실행
 
-- _Describe your EDA process and step-by-step conclusion_
+valid에 나온 파일을 로컬로 다운 받아 streamlit에 전달.
 
-### Data Processing
 
-- _Describe data processing process (e.g. Data Labeling, Data Cleaning..)_
 
-## 4. Modeling
-
-### Model descrition
-
-- _Write model information and why your select this model_
-
-### Modeling Process
-
-- _Write model train and test process with capture_
-
-## 5. Result
-
-### Leader Board
-
-- _Insert Leader Board Capture_
-- _Write rank and score_
-
-### Presentation
-
-- _Insert your presentaion file(pdf) link_
-
-## etc
-
-### Meeting Log
-
-- _Insert your meeting log link like Notion or Google Docs_
-
-### Reference
-
-- _Insert related reference_
