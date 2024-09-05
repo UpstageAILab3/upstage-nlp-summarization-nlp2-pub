@@ -91,3 +91,7 @@ e.g.
 ### Reference
 
 - _Insert related reference_
+
+for llm
+pip install -i https://test.pypi.org/simple/ bitsandbytes
+pip install accelerate
