@@ -95,3 +95,4 @@ e.g.
 for llm
 pip install -i https://test.pypi.org/simple/ bitsandbytes
 pip install accelerate
+pip install scipy
