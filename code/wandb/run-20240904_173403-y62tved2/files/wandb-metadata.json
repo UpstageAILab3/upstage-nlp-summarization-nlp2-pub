@@ -1,0 +1,287 @@
+{
+    "os": "Linux-5.4.0-166-generic-x86_64-with-glibc2.31",
+    "python": "3.10.13",
+    "heartbeatAt": "2024-09-04T08:34:03.854172",
+    "startedAt": "2024-09-04T08:34:03.007637",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/DongjaeHeo/upstage-nlp-summarization-nlp2.git",
+        "commit": "8ce00668b36fbf989a8075ba1a3be143e8584805"
+    },
+    "email": "lindsay.heo@gmail.com",
+    "root": "/dj2",
+    "host": "instance-9777",
+    "username": "root",
+    "executable": "/opt/conda/bin/python",
+    "cpu_count": 24,
+    "cpu_count_logical": 48,
+    "cpu_freq": {
+        "current": 2.2843333333333335,
+        "min": 2200.0,
+        "max": 3800.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2.191,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.195,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.197,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.193,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.202,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.193,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.191,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.204,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 4.347,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.174,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.175,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.196,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.198,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.197,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.198,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.198,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.201,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.195,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.196,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.191,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.197,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.195,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 4.35,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.168,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.177,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.189,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.201,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.196,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.202,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.199,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.203,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.196,
+            "min": 2200.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2.202,
+            "min": 2200.0,
+            "max": 3800.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 1830.7268676757812,
+            "used": 191.65679550170898
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3090",
+            "memory_total": 25769803776
+        }
+    ],
+    "memory": {
+        "total": 251.61767578125
+    }
+}
