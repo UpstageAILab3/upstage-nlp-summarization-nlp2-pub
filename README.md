@@ -50,8 +50,8 @@
 - rm Miniconda3-latest-Linux-x86_64.sh
 - source ~/.bashrc
 - conda activate nlp
-- pip install jupyter nbconvert numpy matplotlib seaborn scikit-learn timm torch==2.3.1 pyyaml tqdm torch pytorch-lightning rouge transformers transformers[torch] wandb datasets absl-py nltk rouge_score evaluate konlpy fastapi uvicorn sentencepiece keybert rouge-score
-
+- pip install jupyter nbconvert numpy matplotlib seaborn scikit-learn timm torch==2.3.1 pyyaml tqdm torch pytorch-lightning rouge transformers transformers[torch] wandb datasets absl-py nltk rouge_score evaluate konlpy fastapi uvicorn sentencepiece keybert rouge-score jsonlines accelerate==0.29.3 peft==0.10.0 bitsandbytes==0.43.1 trl==0.8.6
+- pip install -qqq flash-attn
 
 ## miniconda3 세팅_우분투_bash(선택)
 우분투 bash 쉘 시작할 때, nlp 가상환경이 기본으로 실행되도록 하는 방법임.
