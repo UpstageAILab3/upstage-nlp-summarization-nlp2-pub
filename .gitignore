@@ -7,7 +7,7 @@ fonts/
 test/
 test_backup/
 wandb/
-output/
+output*
 checkpoint/
 prediction/
 
